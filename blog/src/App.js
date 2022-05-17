@@ -1,7 +1,7 @@
 /* eslint-disable */
 import logo from './logo.svg';
 import './App.css';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 function App() {
 
@@ -9,6 +9,7 @@ function App() {
   let [따봉, 따봉변경] = useState([0, 0, 0]);
   let [modal, setModal] = useState(false);
   let [title, setTitle] = useState(0);
+  let [입력값, 입력값변경] = useState('');
 
   return (
     <div className="App">
@@ -43,20 +44,37 @@ function App() {
       </div> */}
 
       {
-        글제목.map(function(a, i){
+        글제목.map(function(a, i){ // a는 array안에 있는 각각의 자료임, i는 반복문 돌때 마다 0부터 1씩 증가
           return (
             <div className="list" key={ i }>
               <h4 onClick={()=>{setModal(true); setTitle(i);}}>{ 글제목[i] }
-              <span onClick={()=>{ 
+              <span onClick={(e)=>{ 
+                e.stopPropagation();
                 let copy = [...따봉];
                 copy[i] = copy[i] + 1;
                 따봉변경(copy)
-               }}>👍</span>{ 따봉[i] }</h4>
+               }}>👍</span>{ 따봉[i] }
+               </h4>
               <p>5월 9일 발행</p>
+              <button onClick={()=>{
+                let copy = [...글제목];
+                 copy.splice(i, 1);
+                 글제목변경(copy);
+               }}>삭제</button>
             </div> 
           )
         })
       }
+
+      <input onChange={(e)=>{입력값변경(e.target.value);}} /> 
+
+      <Profile />
+
+      <button onClick={()=>{
+        let copy = [...글제목];
+        copy.unshift(입력값);
+        글제목변경(copy);
+      }}>글추가</button>
 
       {
         modal == true ? <Modal 글제목={글제목} title={title}/> : null
@@ -74,5 +92,30 @@ function Modal(props){
     </div>
   )
 }
+
+//component만드는 기본 문법 (예전 리액트 문법)
+class Profile extends React.Component {
+  constructor(){
+    super();
+    this.state = { name : 'kim', age : 30 }
+  }
+
+  changeName(){
+    this.setState( {name: 'Park'} )
+  }
+
+  render(){
+     return (
+       <div>
+          <h3>프로필입니다</h3>
+          <p>저는 { this.state.name }</p>
+          <button onClick = {this.changeName.bind(this)}> 버튼 </button>
+        </div>
+     )
+  }
+}
+
+
+
 
 export default App;

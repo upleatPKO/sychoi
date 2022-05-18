@@ -47,7 +47,7 @@ function App() {
         글제목.map(function(a, i){ // a는 array안에 있는 각각의 자료임, i는 반복문 돌때 마다 0부터 1씩 증가
           return (
             <div className="list" key={ i }>
-              <h4 onClick={()=>{setModal(true); setTitle(i);}}>{ 글제목[i] }
+              <h4 onClick={()=>{setModal(!modal); setTitle(i);}}>{ 글제목[i] }
               <span onClick={(e)=>{ 
                 e.stopPropagation();
                 let copy = [...따봉];
@@ -77,7 +77,7 @@ function App() {
       }}>글추가</button>
 
       {
-        modal == true ? <Modal 글제목={글제목} title={title}/> : null
+        modal == true ? <Modal 글제목변경={글제목변경} 글제목={글제목} title={title}/> : null
       } 
     </div>
   );
@@ -89,6 +89,11 @@ function Modal(props){
       <h4>{props.글제목[props.title]}</h4>
       <p>날짜</p>
       <p>상세내용</p>
+      <button onClick={()=>{
+        let copy = [...props.글제목];
+        copy[0] = '여자코트추천';
+        props.글제목변경(copy);
+      }}>글수정</button>
     </div>
   )
 }

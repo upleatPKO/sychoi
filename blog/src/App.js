@@ -58,7 +58,7 @@ function App() {
               <p>5월 9일 발행</p>
               <button onClick={()=>{
                 let copy = [...글제목];
-                 copy.splice(i, 1);
+                 copy.splice(i, 1); // copy에서 i번째 항목 삭제
                  글제목변경(copy);
                }}>삭제</button>
             </div> 
@@ -72,7 +72,7 @@ function App() {
 
       <button onClick={()=>{
         let copy = [...글제목];
-        copy.unshift(입력값);
+        copy.unshift(입력값); // copy  맨 처음에 입력값 추가
         글제목변경(copy);
       }}>글추가</button>
 

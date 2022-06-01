@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Outlet } from "react-router-dom"
+import { Nav } from "react-bootstrap"
+import { addItem } from "./../store.js"
+import { useDispatch } from "react-redux"
 
 // 컴포넌트의 Lifecyle (중간중간 코드실행 가능)
 // - 페이지에 장착 : mount
@@ -21,6 +24,17 @@ function Detail(props) {
 //  arrow function에서 return과 중괄호는 동시에 생략가능
 
     let [alert, setalert] = useState(true);
+    let [탭, 탭변경] = useState(0);
+    let dispatch =  useDispatch();
+
+    useEffect(()=>{
+        let 꺼낸거 = localStorage.getItem('watched')
+        꺼낸거 = JSON.parse(꺼낸거)
+        꺼낸거.push(찾은상품.id)
+        꺼낸거 = new Set(꺼낸거)
+        꺼낸거 = Array.from(꺼낸거)
+        localStorage.setItem('watched', JSON.stringify(꺼낸거))
+    }, [])
 
     useEffect(()=>{
         let a = setTimeout(()=>{ setalert(false) }, 2000)
@@ -59,11 +73,34 @@ function Detail(props) {
                     <h4 className="pt-5">{ 찾은상품.title }</h4> 
                     <p>{ 찾은상품.content }</p>
                     <p>{ 찾은상품.price }</p>
-                    <button className="btn btn-danger">주문하기</button> 
+                    <button className="btn btn-danger" onClick={()=>{
+                        dispatch(addItem({id : 찾은상품.id, name : 찾은상품.title , count : 1}))
+                    }}>주문하기</button> 
                 </div>
             </div>
+
+            <Nav variant="tabs"  defaultActiveKey="link0">
+                <Nav.Item>
+                <Nav.Link eventKey="link0" onClick={()=>{탭변경(0)}}>버튼0</Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                <Nav.Link eventKey="link1" onClick={()=>{탭변경(1)}}>버튼1</Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                <Nav.Link eventKey="link2" onClick={()=>{탭변경(2)}}>버튼2</Nav.Link>
+                </Nav.Item>
+            </Nav>
+            <TabContent 탭={탭} />
+            <Outlet></Outlet>
+            <button onClick={()=>{props.navigate(-1)}}>목록</button>
         </div> 
     )
 }
-export default Detail;
 
+function TabContent({탭}) {
+    //if (탭 == 0){return <div>내용0</div>}
+    //if (탭 == 1){return <div>내용1</div>}
+    //if (탭 == 2){return <div>내용2</div>}
+    return [<div>내용0</div>, <div>내용1</div>, <div>내용2</div>][탭]
+}
+export default Detail;

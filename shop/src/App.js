@@ -1,16 +1,22 @@
-import {useState} from "react";
-import {Navbar, Container, Nav, Row, Col} from 'react-bootstrap';
+import {useEffect, useState} from "react"
+import {Navbar, Container, Nav, Row, Col} from 'react-bootstrap'
 import { Routes, Route, Link, useNavigate, Outlet} from 'react-router-dom'
 import './App.css';
-import data from './data.js';
-import Detail from './pages/detail.js';
-import axios from 'axios';
-//import bg from './img/bg.png';
+import data from './data.js'
+import Detail from './pages/detail.js'
+import axios from 'axios'
+import Cart from './pages/Cart.js'
+//import bg from './img/bg.png'
 
 // inline 스타일로 배경이미지 넣을 때 : <div className="main-bg" style={{ backgroundImage : 'url(' + bg +')'}}></div>
 // public 폴더 안에 파일은 압축되지 않음
 // publc 폴더 이미지 쓰는 권장방식 : <img src={process.env.PUBLIC_URL + '/logo192.png'} /> 
+
+// Nested Routes : <Route>안에 <Route>를 넣을 수 있는데 이것을 Nested Routes라고 부른다.
+// nested routes의 element 보여주는 곳은 <Outlet>
+
 // 페이지 이동도와주는 useNavigate()
+// navigate('/') : Home
 // navigate(1):앞으로 한번 가기, navigage(-1) : 뒤로 1번 가기
 
 // ajax 사용하면 새로고침 없이도 GET/POST요청 가능
@@ -19,6 +25,10 @@ import axios from 'axios';
 
 function App() {
 
+  useEffect(()=>{
+    localStorage.setItem('watched', JSON.stringify( [] ))
+  },[])
+
   let [shoes, setShoes] = useState(data);
   let navigate = useNavigate();
 
@@ -26,13 +36,14 @@ function App() {
     <div className="App">
       <Navbar bg="dark" variant="dark">
         <Container>
-        <Navbar.Brand href="#home">ShoeShop</Navbar.Brand>
+        <Navbar.Brand href="/">ShoeShop</Navbar.Brand>
         <Nav className="me-auto">
-          <Nav.Link onClick={()=>{ navigate('/')}}>Home</Nav.Link>
-          <Nav.Link onClick={()=>{ navigate('/detail')}}>Detail</Nav.Link>
+          <Nav.Link onClick={()=>{ navigate('/about') }}>About</Nav.Link>
+          <Nav.Link onClick={()=>{ navigate('/cart') }}>Cart</Nav.Link>
         </Nav>
         </Container>
       </Navbar>
+      <div className="main-bg"></div>
 
       {/* 
         <Link to="/">홈</Link>
@@ -42,13 +53,12 @@ function App() {
       <Routes>
         <Route path="/" element={
           <>
-            <div className="main-bg"></div>
             <Container>
                 <Row>
                     {
                       shoes.map((a, i)=>{
                           return (
-                          <Card shoes = {a} i = {i} />
+                          <Card shoes = {a} i = {i} navigate = {navigate} />
                           )
                       })
                     }
@@ -71,12 +81,9 @@ function App() {
             }}>더보기</button>
           </>
         } />
-        <Route path="/detail/:id" element={<Detail shoes={shoes} />} />
 
-        {/* 
-          Nested Routes : <Route>안에 <Route>를 넣을 수 있는데 이것을 Nested Routes라고 부른다.
-          nested routes의 element 보여주는 곳은 <Outlet>
-         */}
+        <Route path="/detail/:id" element={<Detail shoes={shoes} navigate = {navigate} />} />
+        <Route path="/cart" element={<Cart/>} />
         <Route path="/about" element={<About/>}>
           <Route path="member" element={<div>멤버</div>} />
           <Route path="location" element={<div>위치정보</div>} />
@@ -99,8 +106,8 @@ function About(){
 
 function Card(props){
   return(
-    <Col>
-      <img src={'https://codingapple1.github.io/shop/shoes'+ (props.i+1) +'.jpg'} width="80%" alt="" />
+    <Col onClick={()=>{ props.navigate('/detail/'+ props.shoes.id)}}>
+      <img src={'https://codingapple1.github.io/shop/shoes'+ (props.shoes.id+1) +'.jpg'} width="80%" alt="" />
       <h4>{ props.shoes.title }</h4>
       <p>{ props.shoes.price }</p>
     </Col>

@@ -5,7 +5,7 @@ import { addItem } from "./../store.js"
 import { useDispatch } from "react-redux"
 
 // 컴포넌트의 Lifecyle (중간중간 코드실행 가능)
-// - 페이지에 장착 : mount
+// - 페이지에 장착(화면에 보이는 것) : mount
 // - 가끔 업데이트 : update
 // - 필요없으면 제거 : unmount
 
@@ -43,6 +43,7 @@ function Detail(props) {
             clearTimeout(a) //기존타이머는 제거
         } // clean up function: useEffect 동작 전에 실행, (참고) mount시 실행안됨/unmount시 실행됨
     }, [])
+
     // mount,update시 코드 실행해주는 useEffect
 
     // useEffect 안에 있는 코드는 html 렌더링 후에 동작한다.
@@ -55,9 +56,18 @@ function Detail(props) {
     //      return ()=>{ 3.unmount시 1회 코드 실행하고 싶으면}
     //}, [])
     // useEffect(()=>{ }, [state명]) 4.특정 state 변경 시에만 실행하려면 [state명]
+
+    let [fade2, setFade2] = useState('');
+
+    useEffect(()=>{
+        setFade2('end')
+        return ()=>{
+            setFade2('')
+        }
+    },[])
     
     return (
-        <div className="container">
+        <div className={'container start ' + fade2}>
             {
                 alert == true ?
                 <div className="alert alert-warning">
@@ -101,6 +111,16 @@ function TabContent({탭}) {
     //if (탭 == 0){return <div>내용0</div>}
     //if (탭 == 1){return <div>내용1</div>}
     //if (탭 == 2){return <div>내용2</div>}
-    return [<div>내용0</div>, <div>내용1</div>, <div>내용2</div>][탭]
+    let [fade, setFade] = useState('');
+    useEffect(()=>{
+        setTimeout(()=>{setFade('end')}, 100)
+        
+        return ()=>{
+            setFade('')
+        }
+    }, [탭])
+    return (<div className={'start ' + fade}>
+        {[<div>내용0</div>, <div>내용1</div>, <div>내용2</div>][탭]}
+    </div>)
 }
 export default Detail;

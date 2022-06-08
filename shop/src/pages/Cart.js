@@ -6,7 +6,7 @@ import { addCount } from './../store.js'
 function Cart(){
 
     let state = useSelector((state)=> state) // Redux store의 모든 state 가져옴
-    let dispatch = useDispatch()
+    let dispatch = useDispatch() // store.js로 요청보내주는 함수임
 
     return (
         <div>

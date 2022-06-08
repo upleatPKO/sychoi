@@ -43,8 +43,6 @@ function App() {
         </Nav>
         </Container>
       </Navbar>
-      <div className="main-bg"></div>
-
       {/* 
         <Link to="/">홈</Link>
         <Link to="/detail">상세페이지</Link> 
@@ -53,6 +51,7 @@ function App() {
       <Routes>
         <Route path="/" element={
           <>
+            <div className="main-bg"></div>
             <Container>
                 <Row>
                     {
